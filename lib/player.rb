@@ -6,7 +6,7 @@ class Player
 		@last_shot = Time.now
 		@window = window
 		@score = 0
-  		@lives = 4
+  		@lives = 3
 	end
 
 	def warp(x, y)
@@ -26,7 +26,7 @@ class Player
 	end
 
 	def shoot(projectiles)
-		if (Time.now - @last_shot) > 0.2
+		if (Time.now - @last_shot) > 0.5
 			projectiles.push(Projectile.new(@window, @x-1, @y-20))
 			@last_shot = Time.now
 		end
@@ -42,12 +42,4 @@ class Player
 		@image.draw_rot(@x, @y, 1, 0)
 	end
 
-	def draw_lives
-	    return unless @player.lives > 0
-	    x = 20
-	    @player.lives.times do 
-	      @life_image.draw(x, 440, 50)
-	      x += 20
-	  end
-    end
 end
