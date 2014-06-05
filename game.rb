@@ -4,6 +4,7 @@ require 'gosu'
 require './lib/player.rb'
 require './lib/projectile.rb'
 require './lib/aliens.rb'
+require 'whenever'
 
 module ZOrder
 	Background, Actors, UI = *0..2
@@ -44,8 +45,8 @@ class GameWindow < Gosu::Window
 			close
 		end
 
-	  @projectiles.each { |projectile| projectile.move } 
-
+	    @projectiles.each { |projectile| projectile.move } 
+		@aliens.each {|alien| alien.move}
 	end
 
 	def draw
