@@ -1,32 +1,11 @@
 class Alien
 	def initialize(window, x, y, type="good")
-		@x, @y = x, y
+		@x, @y, @angle = x, y, 180
 		@image = Gosu::Image.new(window, "assets/alien-#{type}.png")
-		@alive = true
-		@exploded = false
 	end
 
 	def draw
-		if @exploded
-			@alive = false
-		else
-			@image.draw_rot(@x, @y, 1, 180.0)
-		end	
-	end
-
-	def move!
-		@x += dx
-		@y += dy
-
-		if @y < 0
-			@y = 0
-			edge_bounce!
-		end
-
-		if @y > Pong::HEIGHT
-			@y = Pong::HEIGHT
-			edge_bounce!
-		end
+		@image.draw_rot(@x, @y, 1, 180.0)
 	end
 
 	def points
@@ -40,10 +19,12 @@ class Alien
 	    else
 	      0
 	    end
-	 end          
+	end
 
-
-	def hit_by(projectiles)
-        @exploded = @exploded || projectiles.any? {|projectile| Gosu::distance(projectile.x, projectile.y, @x, @y) < 22}
-    end
+	def hitbox
+        hitbox_x = ((@x - @image.width/2).to_i..(@x + @image.width/2.to_i)).to_a
+  		hitbox_y = ((@y - @image.width/2).to_i..(@y + @image.width/2).to_i).to_a
+  		{:x => hitbox_x, :y => hitbox_y}
+  	end 
+    
 end
