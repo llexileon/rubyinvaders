@@ -20,7 +20,9 @@ class GameWindow < Gosu::Window
 		@player.warp(320, 420)
 
 		@aliens = Array.new
-		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 60 * x, 60, "bad")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 60 * x, 60, "ugly")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 60 * x, 120, "bad")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 60 * x, 180, "good")) }
 
 		@projectiles = Array.new
 	end
