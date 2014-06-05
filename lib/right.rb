@@ -1,9 +1,9 @@
-class LeftBarrier
+class RightBarrier
  	attr_accessor :x, :y, :angle
 
  	def initialize(window)
  		@image = Gosu::Image.new(window, "assets/barrier.png")
-	    @x, @y, @angle = 1, 300, 0
+	 	@x, @y, @angle = 640, 300, 0
  	end
 
 	def hitbox

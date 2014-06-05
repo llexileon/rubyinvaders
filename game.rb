@@ -5,6 +5,7 @@ require './lib/player.rb'
 require './lib/projectile.rb'
 require './lib/aliens.rb'
 require './lib/barriers.rb'
+require './lib/right.rb'
 require 'whenever'
 
 module ZOrder
@@ -22,8 +23,8 @@ class GameWindow < Gosu::Window
 		@background_image = Gosu::Image.new(self, "assets/background.png")
 		@life_image = Gosu::Image.new(self, "assets/ship-life.png", false)
 
-		@left_barrier = [] << Barrier.new(self, "left")
-		@right_barrier = [] << Barrier.new(self, "right")
+		@left_barrier = LeftBarrier.new(self)
+		@right_barrier = RightBarrier.new(self)
 
 		@player = Player.new(self)
 		@player.warp(320, 540)
@@ -58,8 +59,8 @@ class GameWindow < Gosu::Window
 
 	def draw
 		@background_image.draw(0,0,ZOrder::Background)
-		@left_barrier.each { |left| left.draw }
-		@right_barrier.each { |right| right.draw }
+		@left_barrier.draw
+		@right_barrier.draw
 		@player.draw unless @lives == 0
 		@projectiles.each { |projectile| projectile.draw } 
 		@aliens.each { |alien| alien.draw }
@@ -74,12 +75,26 @@ class GameWindow < Gosu::Window
 	end
 
 	def detect_collisions
+	  	
 	  	@aliens.each do |alien|
 	      if collision?(alien, @player)
 	      	@player.kill
 	      	@warp_sample.play unless @player.lives < 0
 	      end
+	    end 
+	  	
+	  	@aliens.each do |alien|
+	      if collision?(alien, @left_barrier)
+           print "bang"
+          end
 	    end  
+	  	
+	  	@aliens.each do |alien|
+	      if collision?(alien, @right_barrier)
+	      	print "boom"
+	      end
+	    end  	     
+	    
 	    @projectiles.each do |projectile| 
 	        @aliens.each do |alien|
 	            if collision?(projectile, alien)
@@ -89,22 +104,7 @@ class GameWindow < Gosu::Window
 	            end
 	        end
 	    end
-	    
-	    @left_barrier.each do |left|
-	        @aliens.each do |alien|
-	            if collision?(left, alien)
-		            print "boom"
-	            end
-	        end
-	    end
-
-		@right_barrier.each do |right|
-	        @aliens.each do |alien|
-	            if collision?(right, alien)
-		            print "boom"
-	            end
-	        end
-	    end
+	end
 
 	def draw_lives
 	    return unless @player.lives > 0
@@ -115,8 +115,6 @@ class GameWindow < Gosu::Window
 	        end
         end
     end
-
-end
 
 window = GameWindow.new
 window.show
