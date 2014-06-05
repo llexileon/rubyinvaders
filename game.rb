@@ -55,7 +55,7 @@ class GameWindow < Gosu::Window
 
 	    @projectiles.each { |projectile| projectile.move } 
 		@aliens.each {|alien| alien.move}
-	end
+		end
 
 	def draw
 		@background_image.draw(0,0,ZOrder::Background)
@@ -95,7 +95,7 @@ class GameWindow < Gosu::Window
 	      end
 	    end  	     
 	    
-	    @projectiles.each do |projectile| 
+	    @projectiles.each do |projectile| :type == "human"
 	        @aliens.each do |alien|
 	            if collision?(projectile, alien)
 		            @player.score += alien.points
@@ -104,6 +104,14 @@ class GameWindow < Gosu::Window
 	            end
 	        end
 	    end
+
+	    @projectiles.each do |projectile| :type == "alien"
+	            if collision?(projectile, @player)
+		            @player.kill
+		            @warp_sample.play unless @player.lives < 0
+		            @projectiles.delete(projectile)
+	            end
+	    end	    
 	end
 
 	def draw_lives

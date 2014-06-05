@@ -1,10 +1,11 @@
 class Projectile
-	attr_reader :x, :y
+	attr_reader :x, :y, :type
 
-	def initialize(window, x, y)
+	def initialize(window, x, y, type)
 		@image = Gosu::Image.new(window, "./assets/projectile.png")
 		@x, @y = x, y
 		@angle = 180
+		@type = type
 	end
 
 	def draw
