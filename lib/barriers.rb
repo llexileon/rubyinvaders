@@ -5,10 +5,10 @@ class Barrier
  		@image = Gosu::Image.new(window, "assets/barrier.png")
  		@side = side
  		if side == "left"
-	 			@x, @y, @angle = 1, 300, 90
+	 			@x, @y, @angle = 1, 300, 0
 	 	end
 	 	if side == "right"
-	 			@x, @y, @angle = 640, 300, 90
+	 			@x, @y, @angle = 640, 300, 0
  		end
  	end
 
@@ -19,6 +19,6 @@ class Barrier
 	end	
 
 	def draw
-		@image.draw_rot(@x, @y, 1, 90)
+		@image.draw_rot(@x, @y, 1, @angle)
 	end
 end

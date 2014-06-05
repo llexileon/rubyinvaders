@@ -2,7 +2,7 @@ class Alien
 	def initialize(window, x, y, type="good")
 		@x, @y, @angle = x, y, 90
 		@image = Gosu::Image.new(window, "assets/alien-#{type}.png")
-		@speed_modifier = 0.1
+		@speed_modifier = 0.5
 	end
 
 	def draw
@@ -25,16 +25,6 @@ class Alien
 	def move
 	    @x += @speed_modifier*Math.sin(Math::PI/180*@angle)
 	    @y += -@speed_modifier*Math.cos(Math::PI/180*@angle)
-	end
-
-	def rebound_left
-		@x += @speed_modifier*Math.sin(Math::PI/90*@angle)
-	    @y += -@speed_modifier*Math.cos(Math::PI/90*@angle)
-	end
-
-	def rebound_right
-		@x += @speed_modifier*Math.sin(Math::PI/270*@angle)
-	    @y += -@speed_modifier*Math.cos(Math::PI/270*@angle)		
 	end
 
 	def hitbox
