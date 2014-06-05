@@ -26,7 +26,16 @@ class Alien
 	    @x += @speed_modifier*Math.sin(Math::PI/180*@angle)
 	    @y += -@speed_modifier*Math.cos(Math::PI/180*@angle)
 	end
-	
+
+	def rebound_left
+		@x += @speed_modifier*Math.sin(Math::PI/90*@angle)
+	    @y += -@speed_modifier*Math.cos(Math::PI/90*@angle)
+	end
+
+	def rebound_right
+		@x += @speed_modifier*Math.sin(Math::PI/270*@angle)
+	    @y += -@speed_modifier*Math.cos(Math::PI/270*@angle)		
+	end
 
 	def hitbox
         hitbox_x = ((@x - @image.width/2).to_i..(@x + @image.width/2.to_i)).to_a

@@ -22,11 +22,11 @@ class GameWindow < Gosu::Window
 		@background_image = Gosu::Image.new(self, "assets/background.png")
 		@life_image = Gosu::Image.new(self, "assets/ship-life.png", false)
 
+		@left_barrier = Barrier.new(self, "left")
+		@right_barrier = Barrier.new(self, "right")
+
 		@player = Player.new(self)
 		@player.warp(320, 540)
-
-		@left_barrier = Barrier.new(:left)
-		@right_barrier = Barrier.new(:right)
 
 		@aliens = Array.new
 		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 50 * x, 60, "ugly")) }
@@ -58,8 +58,8 @@ class GameWindow < Gosu::Window
 
 	def draw
 		@background_image.draw(0,0,ZOrder::Background)
-		@left_barrier.draw(self)
-		@right_barrier.draw(self)
+		@left_barrier.draw
+		@right_barrier.draw
 		@player.draw unless @lives == 0
 		@projectiles.each { |projectile| projectile.draw } 
 		@aliens.each { |alien| alien.draw }
@@ -89,6 +89,18 @@ class GameWindow < Gosu::Window
 	            end
 	        end
 	    end
+        # @aliens.each do |alien|
+        #     if collision?(@left_barrier, alien)
+	       #      @aliens.reverse(alien)
+        #     end
+        # end
+
+        # @aliens.each do |alien|
+        #     if collision?(@right_barrier, alien)
+	       #      @aliens.reverse(alien)
+        #     end
+        # end
+
 	end
 
 	def draw_lives
