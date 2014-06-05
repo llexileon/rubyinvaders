@@ -1,6 +1,6 @@
 class Alien
 	def initialize(window, x, y, type="good")
-		@x, @y, @angle = x, y, 180
+		@x, @y, @angle = x, y, 90
 		@image = Gosu::Image.new(window, "assets/alien-#{type}.png")
 		@speed_modifier = 0.1
 	end
@@ -25,9 +25,8 @@ class Alien
 	def move
 	    @x += @speed_modifier*Math.sin(Math::PI/180*@angle)
 	    @y += -@speed_modifier*Math.cos(Math::PI/180*@angle)
-	    @x %= 640
-	    @y %= 480
-    end
+	end
+	
 
 	def hitbox
         hitbox_x = ((@x - @image.width/2).to_i..(@x + @image.width/2.to_i)).to_a

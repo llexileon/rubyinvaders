@@ -6,7 +6,7 @@ class Player
 		@last_shot = Time.now
 		@window = window
 		@score = 0
-  		@lives = 3
+  		@lives = 4
 	end
 
 	def warp(x, y)
