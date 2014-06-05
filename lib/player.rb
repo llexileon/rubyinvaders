@@ -41,4 +41,13 @@ class Player
 	def draw
 		@image.draw_rot(@x, @y, 1, 0)
 	end
+
+	def draw_lives
+	    return unless @player.lives > 0
+	    x = 20
+	    @player.lives.times do 
+	      @life_image.draw(x, 440, 50)
+	      x += 20
+	  end
+    end
 end

@@ -15,6 +15,7 @@ class GameWindow < Gosu::Window
 		self.caption = 'SPACE INVADERS'
 
 		@background_image = Gosu::Image.new(self, "assets/background.png")
+		@life_image = Gosu::Image.new(self, "assets/ship-life.png", false)
 
 		@player = Player.new(self)
 		@player.warp(320, 420)
@@ -44,15 +45,15 @@ class GameWindow < Gosu::Window
 		end
 
 	  @projectiles.each { |projectile| projectile.move } 
-	  # @aliens.each { |alien| alien.hit_by(@projectiles) }
 
 	end
 
 	def draw
 		@background_image.draw(0,0,ZOrder::Background)
 		@player.draw unless @lives == 0
-		@projectiles.each { |projectile| projectile.draw } unless @lives == 0
-		@aliens.each { |alien| alien.draw } unless @lives == 0
+		@projectiles.each { |projectile| projectile.draw } 
+		@aliens.each { |alien| alien.draw }
+		draw_lives
 	end
 
 	def collision?(object_1, object_2)
@@ -79,6 +80,15 @@ class GameWindow < Gosu::Window
 	        end
 	    end
 	end
+
+	def draw_lives
+	    return unless @player.lives > 0
+		    x = 20
+		    @player.lives.times do 
+		        @life_image.draw(x, 440, 50)
+		        x += 20
+	    end
+    end
 end
 window = GameWindow.new
 window.show
