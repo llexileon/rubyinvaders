@@ -4,6 +4,7 @@ require 'gosu'
 require './lib/player.rb'
 require './lib/projectile.rb'
 require './lib/aliens.rb'
+require './lib/shields.rb'
 require 'whenever'
 
 module ZOrder
@@ -21,14 +22,16 @@ class GameWindow < Gosu::Window
 
 		@background_image = Gosu::Image.new(self, "assets/background.png", true)
 		@life_image = Gosu::Image.new(self, "assets/ship-life.png", false)
+		@shields = Array.new
+		(1..3).to_a.each { |x| @shields.push(Shield.new(self, 300 * x, 675))}
 
 		@player = Player.new(self)
-		@player.warp(600, 800)
+		@player.warp(600, 790)
 
 		@aliens = Array.new
-		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 200, "ugly")) }
-		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 40, "bad")) }
-		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 120, "good")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 150 * x + 50, 200, "ugly")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 150 * x + 50, 40, "bad")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 150 * x + 50, 120, "good")) }
 
 		@projectiles = Array.new
 		@timer = 0
@@ -63,7 +66,6 @@ class GameWindow < Gosu::Window
 
 	def invasion
 		@aliens.sample.shoot(@projectiles)
-		# @aliens.each { |alien| alien.shoot(@projectiles) }
 	end	
 
 	def draw
@@ -71,8 +73,9 @@ class GameWindow < Gosu::Window
 		@player.draw unless @lives == 0
 		@projectiles.each { |projectile| projectile.draw } 
 		@aliens.each { |alien| alien.draw }
+		@shields.each { |shield| shield.draw }
 		draw_lives
-		@font.draw("score: #{@player.score}", 875, 830, 50, 1.0, 1.0, Gosu::Color::WHITE)
+		@font.draw("score: #{@player.score}", 875, 830, 50, 1.0, 1.0, Gosu::Color::rgb(0,248,238))
 	end
 
 	def collision?(object_1, object_2)
@@ -128,7 +131,7 @@ class GameWindow < Gosu::Window
 	    return unless @player.lives > 0
 		    x = 45
 		    @player.lives.times do 
-		        @life_image.draw(x, 850, 100)
+		        @life_image.draw(x + 20, 838, 50)
 		        x += 30
 	        end
         end
