@@ -35,7 +35,11 @@ class GameWindow < Gosu::Window
 
 		@projectiles = Array.new
 		@timer = 0
-
+		# Foley SFX
+		@laser_sample = Gosu::Sample.new(self, "assets/audio/lasercanon.mp3")
+		@boom_sample = Gosu::Sample.new(self, "assets/audio/explosion.wav")
+		@impact_sample = Gosu::Sample.new(self, "assets/audio/shieldimpact.wav")
+		@clash_sample = Gosu::Sample.new(self, "assets/audio/laserclash.wav")
 		# Game Soundtrack
 		@soundtrack = [] 
 		@soundtrack << Gosu::Song.new("assets/audio/invaders.mp3")
@@ -44,15 +48,13 @@ class GameWindow < Gosu::Window
 	end
 
 	def update
+		player_control
 		detect_collisions
 		if button_down? Gosu::KbLeft or button_down? Gosu::GpLeft then
 			@player.move_left
 		end
 		if button_down? Gosu::KbRight or button_down? Gosu::GpRight then
 	  		@player.move_right
-		end
-	    if button_down? Gosu::KbSpace
-		  	@player.shoot(@projectiles)
 		end
 
 		if button_down? Gosu::KbQ
@@ -105,6 +107,7 @@ class GameWindow < Gosu::Window
 	    @human_projectiles.each do |projectile|
 	        @aliens.each do |alien|
 	            if collision?(projectile, alien)
+	            	@boom_sample.play(0.6)
 					@player.score += alien.points
 		            @aliens.delete(alien)
 		            @projectiles.delete(projectile)
@@ -125,6 +128,7 @@ class GameWindow < Gosu::Window
 	    @alien_projectiles.each do |alien_projectile|
 	    	@human_projectiles.each do |human_projectile|
 	    		if collision?(alien_projectile, human_projectile)
+		    		@clash_sample.play(0.6)
 		    		@projectiles.delete(alien_projectile)
 		    		@projectiles.delete(human_projectile)
 	    		end
@@ -137,12 +141,27 @@ class GameWindow < Gosu::Window
 		    		@projectiles.delete(alien_projectile)
 		    		hit_shield = shield.impact
 		    		@shields << hit_shield unless hit_shield.nil?
-
+		    		@impact_sample.play(0.6)
 		    		@shields.delete(shield)
 	    		end
 	    	end
 	    end
 
+	    @human_projectiles.each do |human_projectile|
+	    	@shields.each do |shield|
+	    		if collision?(human_projectile, shield)
+		    		@projectiles.delete(human_projectile)
+	    		end
+	    	end
+	    end
+
+	end
+
+	def player_control
+		if button_down? Gosu::KbSpace
+		    @player.shoot(@projectiles)
+		  	@laser_sample.play(0.5)
+		end
 	end
 
 	def draw_lives
