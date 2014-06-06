@@ -4,37 +4,33 @@ require 'gosu'
 require './lib/player.rb'
 require './lib/projectile.rb'
 require './lib/aliens.rb'
-require './lib/barriers.rb'
-require './lib/right.rb'
 require 'whenever'
 
 module ZOrder
 	Background, Actors, UI = *0..2
 end
 
-	WIDTH = 640
-	HEIGHT = 640
+	WIDTH = 1200
+	HEIGHT = 900
 
 class GameWindow < Gosu::Window
 	def initialize
-		super(HEIGHT, WIDTH, false)
+		super(WIDTH, HEIGHT, false)
 		self.caption = 'SPACE INVADERS'
 
-		@background_image = Gosu::Image.new(self, "assets/background.png")
+		@background_image = Gosu::Image.new(self, "assets/background.png", true)
 		@life_image = Gosu::Image.new(self, "assets/ship-life.png", false)
 
-		@left_barrier = LeftBarrier.new(self)
-		@right_barrier = RightBarrier.new(self)
-
 		@player = Player.new(self)
-		@player.warp(320, 540)
+		@player.warp(600, 800)
 
 		@aliens = Array.new
-		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 50 * x, 60, "ugly")) }
-		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 50 * x, 120, "bad")) }
-		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 50 * x, 180, "good")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 200, "ugly")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 40, "bad")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 120, "good")) }
 
 		@projectiles = Array.new
+		@timer = 0
 	end
 
 	def update
@@ -54,18 +50,23 @@ class GameWindow < Gosu::Window
 		end
 
 	    @projectiles.each { |projectile| projectile.move } 
-		@aliens.each {|alien| alien.move}
-		invasion
+		if (@timer % 20) == 0
+			@aliens.each {|alien| alien.move}
 		end
 
+		if (@timer % 15) == 0
+			invasion
+		end
+		@timer += 1
+	end
+
 	def invasion
-		@aliens.each { |alien| alien.shoot(@projectiles) }
+		@aliens.sample.shoot(@projectiles)
+		# @aliens.each { |alien| alien.shoot(@projectiles) }
 	end	
 
 	def draw
 		@background_image.draw(0,0,ZOrder::Background)
-		@left_barrier.draw
-		@right_barrier.draw
 		@player.draw unless @lives == 0
 		@projectiles.each { |projectile| projectile.draw } 
 		@aliens.each { |alien| alien.draw }
@@ -86,19 +87,7 @@ class GameWindow < Gosu::Window
 	      	@player.kill
 	      	@warp_sample.play unless @player.lives < 0
 	      end
-	    end 
-	  	
-	  	@aliens.each do |alien|
-	      if collision?(alien, @left_barrier)
-           print "bang"
-          end
-	    end  
-	  	
-	  	@aliens.each do |alien|
-	      if collision?(alien, @right_barrier)
-	      	print "boom"
-	      end
-	    end  	     
+	    end      
 	    
 	    @human_projectiles = @projectiles.select {|p| p.type == "human" }
 
@@ -114,21 +103,30 @@ class GameWindow < Gosu::Window
 
 	    @alien_projectiles = @projectiles.select {|p| p.type == "alien" }
 
-
-	    @alien_projectiles.each do |projectile| :type == "alien"
+	    @alien_projectiles.each do |projectile|
 	            if collision?(projectile, @player)
 		            @player.kill
 		            # @warp_sample.play unless @player.lives < 0
 		            @projectiles.delete(projectile)
 	            end
-	    end	    
+	    end
+
+	    @alien_projectiles.each do |alien_projectile|
+	    	@human_projectiles.each do |human_projectile|
+	    		if collision?(alien_projectile, human_projectile)
+		    		@projectiles.delete(alien_projectile)
+		    		@projectiles.delete(human_projectile)
+	    		end
+	    	end
+	    end
+
 	end
 
 	def draw_lives
 	    return unless @player.lives > 0
 		    x = 45
 		    @player.lives.times do 
-		        @life_image.draw(x, 580, 100)
+		        @life_image.draw(x, 850, 100)
 		        x += 20
 	        end
         end

@@ -14,20 +14,20 @@ class Player
 	end
 
 	def move_left
-		if @x > 32
+		if @x > 80
 			@x -= 5
 		end
 	end
 
 	def move_right
-		if @x < 608
+		if @x < 1120
 			@x += 5
 		end
 	end
 
 	def shoot(projectiles)
 		if (Time.now - @last_shot) > 0.5
-			projectiles.push(Projectile.new(@window, @x-1, @y-20, "human"))
+			projectiles.push(Projectile.new(@window, @x-4, @y-40, "human"))
 			@last_shot = Time.now
 		end
 	end

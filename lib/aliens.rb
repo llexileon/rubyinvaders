@@ -1,6 +1,7 @@
 class Alien
 	def initialize(window, x, y, type="good")
-		@x, @y, @angle = x, y, 180
+		@x, @y, @start_x, @start_y, @angle = x, y, x, y, 180
+		@direction = :left
 		@image = Gosu::Image.new(window, "assets/alien-#{type}.png")
 		@speed_modifier = 0.2
 		@window = window
@@ -8,11 +9,11 @@ class Alien
 	end
 
 	def draw
-		@image.draw_rot(@x, @y, 1, 180.0)
+		@image.draw_rot(@x, @y, 1, 0)
 	end
 
 	def points
-	    case @size
+	    case @type
 	    when 'good'
 	      20
 	    when 'bad'
@@ -25,8 +26,30 @@ class Alien
 	end
 
 	def move
-	    @x += @speed_modifier*Math.sin(Math::PI/180*@angle)
-	    @y += -@speed_modifier*Math.cos(Math::PI/180*@angle)
+		move_left if @direction == :left
+		move_right if @direction == :right
+	    # @y += -@speed_modifier*Math.cos(Math::PI/180*@angle)
+	end
+
+	def move_left
+		if (@x - @start_x) < 80
+	    	@x += 10
+	    else
+	    	change_direction
+	    end
+	end
+
+	def move_right
+		if (@start_x - @x) < 80
+	    	@x -= 10
+	    else
+	    	change_direction
+	    end
+	end
+
+	def change_direction
+		@y += 20
+		@direction = (@direction == :left) ? :right : :left
 	end
 	
 	def shoot(projectiles)
