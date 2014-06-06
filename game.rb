@@ -17,7 +17,7 @@ class GameWindow < Gosu::Window
 	def initialize
 		super(WIDTH, HEIGHT, false)
 		self.caption = 'SPACE INVADERS'
-		@font = Gosu::Font.new(self, "assets/victor-pixel.ttf", 34)
+		@font = Gosu::Font.new(self, "assets/victor-pixel.ttf", 40)
 
 		@background_image = Gosu::Image.new(self, "assets/background.png", true)
 		@life_image = Gosu::Image.new(self, "assets/ship-life.png", false)
@@ -72,7 +72,7 @@ class GameWindow < Gosu::Window
 		@projectiles.each { |projectile| projectile.draw } 
 		@aliens.each { |alien| alien.draw }
 		draw_lives
-		@font.draw(@player.score, 20, 10, 50, 1.0, 1.0, Gosu::Color::rgb(48, 162, 242))
+		@font.draw("score: #{@player.score}", 875, 830, 50, 1.0, 1.0, Gosu::Color::WHITE)
 	end
 
 	def collision?(object_1, object_2)
@@ -129,7 +129,7 @@ class GameWindow < Gosu::Window
 		    x = 45
 		    @player.lives.times do 
 		        @life_image.draw(x, 850, 100)
-		        x += 20
+		        x += 30
 	        end
         end
     end
