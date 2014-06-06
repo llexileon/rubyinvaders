@@ -14,7 +14,6 @@ class Alien
 	end
 
 	def points
-		puts @type
 	    case @type
 	    when 'good'
 	      20

@@ -29,12 +29,18 @@ class GameWindow < Gosu::Window
 		@player.warp(600, 790)
 
 		@aliens = Array.new
-		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 150 * x + 50, 200, "ugly")) }
-		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 150 * x + 50, 40, "bad")) }
-		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 150 * x + 50, 120, "good")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 200, "ugly")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 40, "bad")) }
+		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 120, "good")) }
 
 		@projectiles = Array.new
 		@timer = 0
+
+		# Game Soundtrack
+		@soundtrack = [] 
+		@soundtrack << Gosu::Song.new("assets/audio/invaders.mp3")
+		@song = @soundtrack.first
+	    @song.play(looping = true)
 	end
 
 	def update
@@ -59,7 +65,7 @@ class GameWindow < Gosu::Window
 		end
 
 		if (@timer % 15) == 0
-			invasion
+			invasion unless @aliens == []
 		end
 		@timer += 1
 	end
