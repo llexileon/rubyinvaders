@@ -1,10 +1,10 @@
 class Alien
 	def initialize(window, x, y, type="good")
-		@x, @y, @angle = x, y, 90
+		@x, @y, @angle = x, y, 180
 		@image = Gosu::Image.new(window, "assets/alien-#{type}.png")
-		@speed_modifier = 0.5
+		@speed_modifier = 0.2
 		@window = window
-		@last_shot = Time.now + rand(20)
+		@last_shot = Time.now + rand(15)
 	end
 
 	def draw
@@ -30,7 +30,7 @@ class Alien
 	end
 	
 	def shoot(projectiles)
-		if (Time.now - @last_shot) > 5
+		if (Time.now - @last_shot) > 4
 			projectiles.push(Projectile.new(@window, @x-1, @y+60, "alien"))
 			@last_shot = Time.now
 		end

@@ -118,7 +118,7 @@ class GameWindow < Gosu::Window
 	    @alien_projectiles.each do |projectile| :type == "alien"
 	            if collision?(projectile, @player)
 		            @player.kill
-		            @warp_sample.play unless @player.lives < 0
+		            # @warp_sample.play unless @player.lives < 0
 		            @projectiles.delete(projectile)
 	            end
 	    end	    

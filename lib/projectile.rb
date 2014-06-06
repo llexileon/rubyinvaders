@@ -2,7 +2,7 @@ class Projectile
 	attr_reader :x, :y, :type
 
 	def initialize(window, x, y, type)
-		@image = Gosu::Image.new(window, "./assets/projectile.png")
+		@image = Gosu::Image.new(window, "assets/projectile-#{type}.png")
 		@x, @y = x, y
 		@type = type
 	end
@@ -13,7 +13,7 @@ class Projectile
 
 	def move
  		if @type == "alien"
- 			@y += 1
+ 			@y += 2.5
  		end
  		if @type == "human"
  			@y -= 5

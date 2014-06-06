@@ -6,7 +6,7 @@ class Player
 		@last_shot = Time.now
 		@window = window
 		@score = 0
-  		@lives = 4
+  		@lives = 5
 	end
 
 	def warp(x, y)
@@ -40,6 +40,12 @@ class Player
 
 	def draw
 		@image.draw_rot(@x, @y, 1, 0)
+	end
+
+	  def kill
+		@lives -= 1	
+		alive = false
+		return if lives <= 0
 	end
 
 end
