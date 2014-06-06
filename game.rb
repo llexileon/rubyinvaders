@@ -131,6 +131,18 @@ class GameWindow < Gosu::Window
 	    	end
 	    end
 
+	    @alien_projectiles.each do |alien_projectile|
+	    	@shields.each do |shield|
+	    		if collision?(alien_projectile, shield)
+		    		@projectiles.delete(alien_projectile)
+		    		hit_shield = shield.impact
+		    		@shields << hit_shield unless hit_shield.nil?
+
+		    		@shields.delete(shield)
+	    		end
+	    	end
+	    end
+
 	end
 
 	def draw_lives
