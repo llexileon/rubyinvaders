@@ -26,7 +26,7 @@ class Player
 	end
 
 	def shoot(projectiles)
-		if (Time.now - @last_shot) > 0.5
+		if (Time.now - @last_shot) > 1
 			projectiles.push(Projectile.new(@window, @x-4, @y-40, "human"))
 			@last_shot = Time.now
 		end

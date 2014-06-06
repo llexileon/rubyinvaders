@@ -6,6 +6,7 @@ class Alien
 		@speed_modifier = 0.2
 		@window = window
 		@last_shot = Time.now + rand(15)
+		@type = type
 	end
 
 	def draw
@@ -13,6 +14,7 @@ class Alien
 	end
 
 	def points
+		puts @type
 	    case @type
 	    when 'good'
 	      20
