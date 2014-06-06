@@ -55,7 +55,12 @@ class GameWindow < Gosu::Window
 
 	    @projectiles.each { |projectile| projectile.move } 
 		@aliens.each {|alien| alien.move}
+		invasion
 		end
+
+	def invasion
+		@aliens.each { |alien| alien.shoot(@projectiles) }
+	end	
 
 	def draw
 		@background_image.draw(0,0,ZOrder::Background)
@@ -95,7 +100,9 @@ class GameWindow < Gosu::Window
 	      end
 	    end  	     
 	    
-	    @projectiles.each do |projectile| :type == "human"
+	    @human_projectiles = @projectiles.select {|p| p.type == "human" }
+
+	    @human_projectiles.each do |projectile|
 	        @aliens.each do |alien|
 	            if collision?(projectile, alien)
 		            @player.score += alien.points
@@ -105,7 +112,10 @@ class GameWindow < Gosu::Window
 	        end
 	    end
 
-	    @projectiles.each do |projectile| :type == "alien"
+	    @alien_projectiles = @projectiles.select {|p| p.type == "alien" }
+
+
+	    @alien_projectiles.each do |projectile| :type == "alien"
 	            if collision?(projectile, @player)
 		            @player.kill
 		            @warp_sample.play unless @player.lives < 0

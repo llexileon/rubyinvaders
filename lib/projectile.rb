@@ -4,16 +4,20 @@ class Projectile
 	def initialize(window, x, y, type)
 		@image = Gosu::Image.new(window, "./assets/projectile.png")
 		@x, @y = x, y
-		@angle = 180
 		@type = type
 	end
 
 	def draw
-		@image.draw(@x, @y, @angle)
+		@image.draw(@x, @y, 100)
 	end
 
 	def move
-		@y -= 5
+ 		if @type == "alien"
+ 			@y += 1
+ 		end
+ 		if @type == "human"
+ 			@y -= 5
+ 		end
 	end
 
 	def hitbox
