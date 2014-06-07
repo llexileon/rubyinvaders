@@ -21,7 +21,7 @@ This is a Space Invaders clone written in Ruby using the [Gosu framework](http:/
 
 I've tried to implement the core mechanics of the game reasonably faithfully thus far, paying particular attention to the aliens movement behavior.
 
-For more information, see the [Space Invaders wiki](http://en.wikipedia.org/wiki/Asteroids_(video_game)).
+For more information, see the [Space Invaders wiki](http://en.wikipedia.org/wiki/Space_invaders).
 
 # Thanks
 
