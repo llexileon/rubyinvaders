@@ -58,13 +58,13 @@ class GameWindow < Gosu::Window
 	end
 
 	def update
+		return unless @game_in_progress
 		if button_down? Gosu::KbLeft or button_down? Gosu::GpLeft then
 			@player.move_left
 		end
 		if button_down? Gosu::KbRight or button_down? Gosu::GpRight then
 	  		@player.move_right
 		end
-		return unless @game_in_progress
 		detect_collisions
 		@timer += 1
 		if (@timer % 20) == 0
@@ -96,8 +96,8 @@ class GameWindow < Gosu::Window
         return unless @game_in_progress
         if @player.lives <= 0
 	      @font.draw("GAME OVER", 315, 370, 50, 3.0, 3.0, Gosu::Color::FUCHSIA)
-	      @font.draw("press 'm' for menu", 430, 470, 50, 1, 1, Gosu::Color::YELLOW)
-	      @font.draw("press 'q' to quit", 430, 495, 50, 1, 1, Gosu::Color::YELLOW)
+	      @font.draw("press 'm' for menu", 430, 480, 50, 1, 1, Gosu::Color::YELLOW)
+	      @font.draw("press 'q' to quit", 430, 505, 50, 1, 1, Gosu::Color::YELLOW)
 	    end
 		@player.draw unless @player.lives <= 0
 		@projectiles.each { |projectile| projectile.draw } 
@@ -186,17 +186,18 @@ class GameWindow < Gosu::Window
 
 	def button_down(id)
 		close if id == Gosu::KbQ
-		if id == Gosu::KbSpace
-		    @player.shoot(@projectiles)
-		  	@laser_sample.play(1)#(0.5)
-		end
 		if button_down? Gosu::KbP
         setup_game unless @game_in_progress
         end
     	if button_down? Gosu::KbM
       		title_screen unless @game_in_progress == false
            @game_in_progress = false
-        end        
+        end
+        return unless @game_in_progress
+        if id == Gosu::KbSpace
+		    @player.shoot(@projectiles)
+		  	@laser_sample.play(1)#(0.5)
+		end        
 	end
 
 	def draw_lives
