@@ -23,9 +23,19 @@ class GameWindow < Gosu::Window
 		super(WIDTH, HEIGHT, false)
 		self.caption = 'SPACE INVADERS'
 		@font = Gosu::Font.new(self, "assets/victor-pixel.ttf", 40)
-
+		@game_in_progress = false
 		@background_image = Gosu::Image.new(self, "assets/background.png", true)
 		@life_image = Gosu::Image.new(self, "assets/ship-life.png", false)
+		audio_engine
+		title_screen
+	end
+
+	def title_screen
+		@game_in_progress = false
+	end
+
+	def setup_game
+	    @game_in_progress = true
 		@shields = Array.new
 		(1..3).to_a.each { |x| @shields.push(Shield.new(self, 300 * x, 675))}
 
@@ -45,22 +55,18 @@ class GameWindow < Gosu::Window
 
 		@projectiles = Array.new
 		@timer = 0
-		audio_engine
 	end
 
 	def update
-		detect_collisions
 		if button_down? Gosu::KbLeft or button_down? Gosu::GpLeft then
 			@player.move_left
 		end
 		if button_down? Gosu::KbRight or button_down? Gosu::GpRight then
 	  		@player.move_right
 		end
-
-
-	    @projectiles.each { |projectile| projectile.move } 
-		@projectiles.reject!{|projectile| projectile.inactive?}
-
+		return unless @game_in_progress
+		detect_collisions
+		@timer += 1
 		if (@timer % 20) == 0
 			@aliens.each {|alien| alien.move}
 		end
@@ -68,7 +74,8 @@ class GameWindow < Gosu::Window
 		if (@timer % 15) == 0
 			invasion unless @aliens == []
 		end
-		@timer += 1
+		@projectiles.each { |projectile| projectile.move } 
+		@projectiles.reject!{|projectile| projectile.inactive?}
 	end
 
 	def invasion
@@ -77,7 +84,18 @@ class GameWindow < Gosu::Window
 
 	def draw
 		@background_image.draw(0,0,ZOrder::Background)
-		@player.draw unless @lives == 0
+		unless @game_in_progress
+	      @font.draw("SPACE INVADERS", 100, 170, 50, 3.0, 3.0, Gosu::Color::GREEN)
+	      @font.draw("press 'p' to play", 215, 280, 50, 1, 1, Gosu::Color::rgb(48, 162, 242))
+	      @font.draw("press 'q' to quit", 215, 305, 50, 1, 1, Gosu::Color::rgb(48, 162, 242))
+	    end
+        return unless @game_in_progress
+        if @player.lives <= 0
+	      @font.draw("GAME OVER", 325, 370, 50, 3.0, 3.0, Gosu::Color::FUCHSIA)
+	      @font.draw("press 'm' for menu", 440, 470, 50, 1, 1, Gosu::Color::YELLOW)
+	      @font.draw("press 'q' to quit", 440, 495, 50, 1, 1, Gosu::Color::YELLOW)
+	    end
+		@player.draw unless @player.lives <= 0
 		@projectiles.each { |projectile| projectile.draw } 
 		@aliens.each { |alien| alien.draw }
 		@shields.each { |shield| shield.draw }
@@ -167,6 +185,13 @@ class GameWindow < Gosu::Window
 		    @player.shoot(@projectiles)
 		  	@laser_sample.play(1)#(0.5)
 		end
+		if button_down? Gosu::KbP
+        setup_game unless @game_in_progress
+        end
+    	if button_down? Gosu::KbM
+      		title_screen unless @game_in_progress == false
+           @game_in_progress = false
+        end        
 	end
 
 	def draw_lives
