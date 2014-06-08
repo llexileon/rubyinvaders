@@ -5,7 +5,7 @@ class Projectile
 		@image = Gosu::Image.new(window, "assets/projectile-#{type}.png")
 		@x, @y = x, y
 		@type = type
-		@distance_traveled, @max_distance = 0, 150
+		@distance_traveled, @max_distance = 0, 300
 		@active = true
 	end
 

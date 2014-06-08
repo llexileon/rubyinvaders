@@ -19,7 +19,6 @@ class Shield
 	end
 
   def impact
-  	puts @size
     case @size
       when 'large'
         Shield.new(@window, @x, @y, 'medium')

@@ -5,7 +5,11 @@ require './lib/player.rb'
 require './lib/projectile.rb'
 require './lib/aliens.rb'
 require './lib/shields.rb'
+require './lib/audioengine'
+
 require 'whenever'
+
+include AudioEngine
 
 module ZOrder
 	Background, Actors, Props, UI = *0..3
@@ -41,16 +45,7 @@ class GameWindow < Gosu::Window
 
 		@projectiles = Array.new
 		@timer = 0
-		# Foley SFX
-		@laser_sample = Gosu::Sample.new(self, "assets/audio/lasercanon.mp3") #wav for squib edition
-		@boom_sample = Gosu::Sample.new(self, "assets/audio/explosion.wav")
-		@impact_sample = Gosu::Sample.new(self, "assets/audio/shieldimpact.wav")
-		@clash_sample = Gosu::Sample.new(self, "assets/audio/laserclash.wav")
-		# Game Soundtrack
-		@soundtrack = [] 
-		@soundtrack << Gosu::Song.new("assets/audio/invaders.mp3")
-		@song = @soundtrack.first
-	    @song.play(looping = true)
+		audio_engine
 	end
 
 	def update
