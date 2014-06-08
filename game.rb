@@ -42,16 +42,16 @@ class GameWindow < Gosu::Window
 		@player = Player.new(self)
 		@player.warp(600, 790)
 
-		@aliens = Array.new
-		# Squib GFX
-		# (1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 230, "ugly")) }
-		# (1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 50, "bad")) }
-		# (1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 140, "good")) }
 
-		# Regular GFX
+		@aliens = Array.new
+		# Regular GFX #
 		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 200, "ugly")) }
 		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 40, "bad")) }
 		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 120, "good")) }
+		# Squib GFX #
+		# (1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 230, "ugly")) }
+		# (1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 50, "bad")) }
+		# (1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 140, "good")) }
 
 		@projectiles = Array.new
 		@timer = 0
@@ -69,6 +69,10 @@ class GameWindow < Gosu::Window
 		@timer += 1
 		if (@timer % 20) == 0
 			@aliens.each {|alien| alien.move}
+		end
+
+		if (@timer % 60) == 0
+			@aliens.each {|alien| alien.speedy += 0.1 }
 		end
 
 		if (@timer % 15) == 0
@@ -91,9 +95,9 @@ class GameWindow < Gosu::Window
 	    end
         return unless @game_in_progress
         if @player.lives <= 0
-	      @font.draw("GAME OVER", 325, 370, 50, 3.0, 3.0, Gosu::Color::FUCHSIA)
-	      @font.draw("press 'm' for menu", 440, 470, 50, 1, 1, Gosu::Color::YELLOW)
-	      @font.draw("press 'q' to quit", 440, 495, 50, 1, 1, Gosu::Color::YELLOW)
+	      @font.draw("GAME OVER", 315, 370, 50, 3.0, 3.0, Gosu::Color::FUCHSIA)
+	      @font.draw("press 'm' for menu", 430, 470, 50, 1, 1, Gosu::Color::YELLOW)
+	      @font.draw("press 'q' to quit", 430, 495, 50, 1, 1, Gosu::Color::YELLOW)
 	    end
 		@player.draw unless @player.lives <= 0
 		@projectiles.each { |projectile| projectile.draw } 
@@ -118,7 +122,8 @@ class GameWindow < Gosu::Window
 	  	@aliens.each do |alien|
 	      if collision?(alien, @player)
 	      	@player.kill
-	      	@warp_sample.play unless @player.lives < 0
+	      	@aliens.delete(alien)
+	      	# @warp_sample.play unless @player.lives < 0
 	      end
 	    end      
 	    

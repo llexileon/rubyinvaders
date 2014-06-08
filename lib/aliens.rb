@@ -1,12 +1,14 @@
 class Alien
+	attr_accessor :speedy
+
 	def initialize(window, x, y, type="good")
 		@x, @y, @start_x, @start_y, @angle = x, y, x, y, 180
 		@direction = :left
 		@image = Gosu::Image.new(window, "assets/alien-#{type}.png")
-		@speed_modifier = 0.2
 		@window = window
 		@last_shot = Time.now + rand(15)
 		@type = type
+		@speedy = 10
 	end
 
 	def draw
@@ -29,12 +31,11 @@ class Alien
 	def move
 		move_left if @direction == :left
 		move_right if @direction == :right
-	    # @y += -@speed_modifier*Math.cos(Math::PI/180*@angle)
 	end
 
 	def move_left
 		if (@x - @start_x) < 80
-	    	@x += 10
+	    	@x += @speedy 
 	    else
 	    	change_direction
 	    end
@@ -42,14 +43,14 @@ class Alien
 
 	def move_right
 		if (@start_x - @x) < 80
-	    	@x -= 10
+	    	@x -= @speedy
 	    else
 	    	change_direction
 	    end
 	end
 
 	def change_direction
-		@y += 20
+		@y += @speedy
 		@direction = (@direction == :left) ? :right : :left
 	end
 	
