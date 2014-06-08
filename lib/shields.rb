@@ -15,7 +15,7 @@ class Shield
    end
 
 	def draw
-		@image.draw_rot(@x, @y, 1, 0)
+		@image.draw_rot(@x, @y, ZOrder::Props, 0)
 	end
 
   def impact

@@ -8,7 +8,7 @@ require './lib/shields.rb'
 require 'whenever'
 
 module ZOrder
-	Background, Actors, UI = *0..2
+	Background, Actors, Props, UI = *0..3
 end
 
 	WIDTH = 1200
@@ -29,6 +29,12 @@ class GameWindow < Gosu::Window
 		@player.warp(600, 790)
 
 		@aliens = Array.new
+		# Squib GFX
+		# (1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 230, "ugly")) }
+		# (1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 50, "bad")) }
+		# (1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 140, "good")) }
+
+		# Regular GFX
 		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 200, "ugly")) }
 		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 40, "bad")) }
 		(1..10).to_a.each { |x| @aliens.push(Alien.new(self, 100 * x + 50, 120, "good")) }
@@ -36,7 +42,7 @@ class GameWindow < Gosu::Window
 		@projectiles = Array.new
 		@timer = 0
 		# Foley SFX
-		@laser_sample = Gosu::Sample.new(self, "assets/audio/lasercanon.mp3")
+		@laser_sample = Gosu::Sample.new(self, "assets/audio/lasercanon.mp3") #wav for squib edition
 		@boom_sample = Gosu::Sample.new(self, "assets/audio/explosion.wav")
 		@impact_sample = Gosu::Sample.new(self, "assets/audio/shieldimpact.wav")
 		@clash_sample = Gosu::Sample.new(self, "assets/audio/laserclash.wav")
@@ -48,7 +54,6 @@ class GameWindow < Gosu::Window
 	end
 
 	def update
-		player_control
 		detect_collisions
 		if button_down? Gosu::KbLeft or button_down? Gosu::GpLeft then
 			@player.move_left
@@ -57,11 +62,10 @@ class GameWindow < Gosu::Window
 	  		@player.move_right
 		end
 
-		if button_down? Gosu::KbQ
-			close
-		end
 
 	    @projectiles.each { |projectile| projectile.move } 
+		@projectiles.reject!{|projectile| projectile.inactive?}
+
 		if (@timer % 20) == 0
 			@aliens.each {|alien| alien.move}
 		end
@@ -83,7 +87,10 @@ class GameWindow < Gosu::Window
 		@aliens.each { |alien| alien.draw }
 		@shields.each { |shield| shield.draw }
 		draw_lives
-		@font.draw("score: #{@player.score}", 875, 830, 50, 1.0, 1.0, Gosu::Color::rgb(0,248,238))
+		# Squib GFX
+		# @font.draw("score: #{@player.score}", 875, 830, ZOrder::UI, 1.0, 1.0, Gosu::Color::rgb(215,223,32))
+		# Regular GFX
+		@font.draw("score: #{@player.score}", 875, 830, ZOrder::UI, 1.0, 1.0, Gosu::Color::rgb(0,248,238))
 	end
 
 	def collision?(object_1, object_2)
@@ -107,7 +114,7 @@ class GameWindow < Gosu::Window
 	    @human_projectiles.each do |projectile|
 	        @aliens.each do |alien|
 	            if collision?(projectile, alien)
-	            	@boom_sample.play(0.6)
+	            	@boom_sample.play(1)#0.6
 					@player.score += alien.points
 		            @aliens.delete(alien)
 		            @projectiles.delete(projectile)
@@ -129,6 +136,7 @@ class GameWindow < Gosu::Window
 	    	@human_projectiles.each do |human_projectile|
 	    		if collision?(alien_projectile, human_projectile)
 		    		@clash_sample.play(0.6)
+		    		@player.score += 10
 		    		@projectiles.delete(alien_projectile)
 		    		@projectiles.delete(human_projectile)
 	    		end
@@ -141,26 +149,28 @@ class GameWindow < Gosu::Window
 		    		@projectiles.delete(alien_projectile)
 		    		hit_shield = shield.impact
 		    		@shields << hit_shield unless hit_shield.nil?
-		    		@impact_sample.play(0.6)
+		    		@impact_sample.play(1)#(0.6)
 		    		@shields.delete(shield)
 	    		end
 	    	end
 	    end
 
-	    @human_projectiles.each do |human_projectile|
-	    	@shields.each do |shield|
-	    		if collision?(human_projectile, shield)
-		    		@projectiles.delete(human_projectile)
-	    		end
-	    	end
-	    end
+	    # Player shots cant fire through sheilds #
+	    # @human_projectiles.each do |human_projectile|
+	    # 	@shields.each do |shield|
+	    # 		if collision?(human_projectile, shield)
+		   #  		@projectiles.delete(human_projectile)
+	    # 		end
+	    # 	end
+	    # end
 
 	end
 
-	def player_control
-		if button_down? Gosu::KbSpace
+	def button_down(id)
+		close if id == Gosu::KbQ
+		if id == Gosu::KbSpace
 		    @player.shoot(@projectiles)
-		  	@laser_sample.play(0.5)
+		  	@laser_sample.play(1)#(0.5)
 		end
 	end
 
@@ -168,7 +178,7 @@ class GameWindow < Gosu::Window
 	    return unless @player.lives > 0
 		    x = 45
 		    @player.lives.times do 
-		        @life_image.draw(x + 20, 838, 50)
+		        @life_image.draw(x + 20, 838, ZOrder::UI)
 		        x += 30
 	        end
         end

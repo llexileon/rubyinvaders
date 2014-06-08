@@ -5,10 +5,12 @@ class Projectile
 		@image = Gosu::Image.new(window, "assets/projectile-#{type}.png")
 		@x, @y = x, y
 		@type = type
+		@distance_traveled, @max_distance = 0, 150
+		@active = true
 	end
 
 	def draw
-		@image.draw(@x, @y, 100)
+		@image.draw(@x, @y, ZOrder::Actors)
 	end
 
 	def move
@@ -18,6 +20,8 @@ class Projectile
  		if @type == "human"
  			@y -= 5
  		end
+ 		@distance_traveled += 1
+        kill if @distance_traveled > @max_distance
 	end
 
 	def hitbox
@@ -26,4 +30,11 @@ class Projectile
     {:x => hitbox_x, :y => hitbox_y}
     end
 
+    def kill
+    @active = false
+    end
+
+    def inactive?
+    !@active
+    end
 end

@@ -39,7 +39,7 @@ class Player
 	end
 
 	def draw
-		@image.draw_rot(@x, @y, 1, 0)
+		@image.draw_rot(@x, @y, ZOrder::Actors, 0)
 	end
 
 	  def kill
